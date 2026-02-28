@@ -12,7 +12,7 @@ typedef struct BST {
     Node* root;
 } BST;
 
-BST* bstCreate()
+BST* bstCreate(void)
 {
     BST* tree = calloc(1, sizeof(*tree));
     return tree;
