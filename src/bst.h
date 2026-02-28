@@ -5,7 +5,7 @@
 typedef struct BST BST;
 
 // Создаёт двоичное дерево поиска без узлов и возвращает указатель на него.
-BST* bstCreate();
+BST* bstCreate(void);
 
 // Вставка значения в дерево.
 void bstInsert(BST* tree, int value);
