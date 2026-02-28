@@ -90,3 +90,69 @@ void bstFree(BST* tree)
     free(tree->root);
     free(tree);
 }
+
+void bstPreorderRecursion(Node* node)
+{
+    if (node == NULL) {
+        return;
+    }
+    printf("%d ", node->value);
+    bstPreorderRecursion(node->leftChild);
+    bstPreorderRecursion(node->rightChild);
+}
+
+void bstPreorder(BST* tree)
+{
+    if (tree == NULL) {
+        return;
+    }
+    if (tree->root == NULL) {
+        return;
+    }
+    bstPreorderRecursion(tree->root);
+    printf("\n");
+}
+
+void bstInorderRecursion(Node* node)
+{
+    if (node == NULL) {
+        return;
+    }
+    bstInorderRecursion(node->leftChild);
+    printf("%d ", node->value);
+    bstInorderRecursion(node->rightChild);
+}
+
+void bstInorder(BST* tree)
+{
+    if (tree == NULL) {
+        return;
+    }
+    if (tree->root == NULL) {
+        return;
+    }
+    bstInorderRecursion(tree->root);
+    printf("\n");
+}
+
+void bstPostorderRecursion(Node* node)
+{
+    if (node == NULL) {
+        return;
+    }
+    bstPostorderRecursion(node->leftChild);
+    bstPostorderRecursion(node->rightChild);
+    printf("%d ", node->value);
+}
+
+void bstPostorder(BST* tree)
+{
+    if (tree == NULL) {
+        return;
+    }
+    if (tree->root == NULL) {
+        return;
+    }
+    bstPostorderRecursion(tree->root);
+    printf("\n");
+}

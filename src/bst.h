@@ -16,3 +16,12 @@ bool bstContains(BST* tree, int value);
 
 // Освобождение памяти, занимаемой деревом.
 void bstFree(BST* tree);
+
+// Обратный обход дерева.
+void bstPostorder(BST* tree);
+
+// Симметричный обход дерева.
+void bstInorder(BST* tree);
+
+// Прямой обход дерева.
+void bstPreorder(BST* tree);
