@@ -18,10 +18,13 @@ bool bstContains(BST* tree, int value);
 void bstFree(BST* tree);
 
 // Обратный обход дерева.
+// Печатает элементы дерева в порядке обратного обхода
 void bstPostorder(BST* tree);
 
 // Симметричный обход дерева.
+// Печатает элементы дерева в порядке симметричного обхода
 void bstInorder(BST* tree);
 
 // Прямой обход дерева.
+// Печатает элементы дерева в порядке прямого обхода
 void bstPreorder(BST* tree);
