@@ -1,4 +1,5 @@
 #include "bst.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -15,9 +16,7 @@ typedef struct BST {
 BST* bstCreate(void)
 {
     BST* tree = calloc(1, sizeof(*tree));
-    if (tree == NULL) {
-        prerror("Ошибка выделения памяти при создании дерева.");
-    }
+    assert(tree != NULL && "Ошибка выделения памяти при создании дерева.");
     return tree;
 }
 
