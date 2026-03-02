@@ -15,6 +15,9 @@ typedef struct BST {
 BST* bstCreate(void)
 {
     BST* tree = calloc(1, sizeof(*tree));
+    if (tree == NULL) {
+        prerror("Ошибка выделения памяти при создании дерева.");
+    }
     return tree;
 }
 
@@ -103,9 +106,6 @@ void bstPreorderRecursion(Node* node)
 
 void bstPreorder(BST* tree)
 {
-    if (tree == NULL) {
-        return;
-    }
     if (tree->root == NULL) {
         return;
     }
@@ -125,9 +125,6 @@ void bstInorderRecursion(Node* node)
 
 void bstInorder(BST* tree)
 {
-    if (tree == NULL) {
-        return;
-    }
     if (tree->root == NULL) {
         return;
     }
@@ -147,9 +144,6 @@ void bstPostorderRecursion(Node* node)
 
 void bstPostorder(BST* tree)
 {
-    if (tree == NULL) {
-        return;
-    }
     if (tree->root == NULL) {
         return;
     }
