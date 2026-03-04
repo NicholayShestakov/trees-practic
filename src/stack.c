@@ -50,11 +50,3 @@ Node* pop(Stack* stack)
     free(popStackNode);
     return popNode;
 }
-
-Node* peek(Stack* stack)
-{
-    if (isEmpty(stack)) {
-        return NULL;
-    }
-    return stack->head->node;
-}
