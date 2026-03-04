@@ -1,5 +1,4 @@
 #pragma once
-
 #include <stdbool.h>
 
 typedef struct BST BST;
@@ -16,6 +15,18 @@ bool bstContains(BST* tree, int value);
 
 // Освобождение памяти, занимаемой деревом.
 void bstFree(BST* tree);
+
+// Обратный обход дерева.
+// Печатает элементы дерева в порядке обратного обхода
+void bstPostorder(BST* tree);
+
+// Симметричный обход дерева.
+// Печатает элементы дерева в порядке симметричного обхода
+void bstInorder(BST* tree);
+
+// Прямой обход дерева.
+// Печатает элементы дерева в порядке прямого обхода
+void bstPreorder(BST* tree);
 
 // Функция, вычисляющая количество всех узлов в дереве.
 int bstSize(BST* tree);
