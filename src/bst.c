@@ -87,8 +87,7 @@ void bstFree(BST* tree)
     if (tree->root == NULL) {
         return;
     }
-    bstFreeRecursion(tree->root->leftChild);
-    bstFreeRecursion(tree->root->rightChild);
+    bstFreeRecursion(tree->root);
     free(tree->root);
     free(tree);
 }
