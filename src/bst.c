@@ -148,7 +148,6 @@ void bstPostorder(BST* tree)
     printf("\n");
 }
 
-<<<<<<< HEAD
 int bstSizeRecursion(Node* node)
 {
     if (node == NULL) {
