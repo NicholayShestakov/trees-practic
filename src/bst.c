@@ -111,6 +111,7 @@ void addLeftStickInStack(Stack* stack, Node* node)
 Iterator* iteratorInit(BST* tree)
 {
     Iterator* iterator = malloc(sizeof(*iterator));
+    assert(iterator != NULL && "А вот на итератор-то памяти и не хватило. Ошибка.");
 
     Stack* stack = createStack();
     addLeftStickInStack(stack, tree->root);
@@ -139,6 +140,6 @@ int iteratorNext(Iterator* iterator)
 
 void iteratorFree(Iterator* iterator)
 {
-    free(iterator->nodeStack);
+    deleteStack(iterator->nodeStack);
     free(iterator);
 }
