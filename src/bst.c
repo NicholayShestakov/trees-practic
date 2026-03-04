@@ -88,7 +88,6 @@ void bstFree(BST* tree)
         return;
     }
     bstFreeRecursion(tree->root);
-    free(tree->root);
     free(tree);
 }
 
