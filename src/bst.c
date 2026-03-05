@@ -24,7 +24,6 @@ void bstInsert(BST* tree, int value)
 {
     Node* newNode = calloc(1, sizeof(*newNode));
     newNode->value = value;
-
     Node* currentNode = tree->root;
     while (currentNode != NULL) {
         if (currentNode->value == value) {
