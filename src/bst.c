@@ -1,4 +1,6 @@
 #include "bst.h"
+#include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct Node {
@@ -11,9 +13,10 @@ typedef struct BST {
     Node* root;
 } BST;
 
-BST* bstCreate()
+BST* bstCreate(void)
 {
     BST* tree = calloc(1, sizeof(*tree));
+    assert(tree != NULL && "Ошибка выделения памяти при создании дерева.");
     return tree;
 }
 
@@ -84,9 +87,7 @@ void bstFree(BST* tree)
     if (tree->root == NULL) {
         return;
     }
-    bstFreeRecursion(tree->root->leftChild);
-    bstFreeRecursion(tree->root->rightChild);
-    free(tree->root);
+    bstFreeRecursion(tree->root);
     free(tree);
 }
 
@@ -147,4 +148,61 @@ int bstMax(BST* tree)
         currentNode = currentNode->rightChild;
     }
     return currentNode->value;
+}
+
+void bstPreorderRecursion(Node* node)
+{
+    if (node == NULL) {
+        return;
+    }
+    printf("%d ", node->value);
+    bstPreorderRecursion(node->leftChild);
+    bstPreorderRecursion(node->rightChild);
+}
+
+void bstPreorder(BST* tree)
+{
+    if (tree->root == NULL) {
+        return;
+    }
+    bstPreorderRecursion(tree->root);
+    printf("\n");
+}
+
+void bstInorderRecursion(Node* node)
+{
+    if (node == NULL) {
+        return;
+    }
+    bstInorderRecursion(node->leftChild);
+    printf("%d ", node->value);
+    bstInorderRecursion(node->rightChild);
+}
+
+void bstInorder(BST* tree)
+{
+    if (tree->root == NULL) {
+        return;
+    }
+    bstInorderRecursion(tree->root);
+    printf("\n");
+}
+
+void bstPostorderRecursion(Node* node)
+{
+    if (node == NULL) {
+        return;
+    }
+    bstPostorderRecursion(node->leftChild);
+    bstPostorderRecursion(node->rightChild);
+    printf("%d ", node->value);
+}
+
+void bstPostorder(BST* tree)
+{
+    if (tree->root == NULL) {
+        return;
+    }
+    bstPostorderRecursion(tree->root);
+    printf("\n");
 }
