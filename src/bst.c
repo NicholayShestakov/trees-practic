@@ -1,5 +1,6 @@
 #include "bst.h"
 #include <assert.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -146,4 +147,48 @@ void bstPostorder(BST* tree)
     }
     bstPostorderRecursion(tree->root);
     printf("\n");
+}
+
+int bstMin(BST* tree)
+{
+    if (tree->root == NULL) {
+        return -1;
+    }
+
+    Node* currentNode = tree->root;
+    while (currentNode->leftChild != NULL) {
+        currentNode = currentNode->leftChild;
+    }
+    return currentNode->value;
+}
+
+int bstMax(BST* tree)
+{
+    if (tree->root == NULL) {
+        return -1;
+    }
+    Node* currentNode = tree->root;
+    while (currentNode->rightChild != NULL) {
+        currentNode = currentNode->rightChild;
+    }
+    return currentNode->value;
+}
+
+bool bstIsValidRecursion(Node* node, int min, int max)
+{
+    if (node == NULL) {
+        return true;
+    }
+    if (node->value <= min || node->value >= max) {
+        return false;
+    }
+    return bstIsValidRecursion(node->leftChild, min, node->value) && bstIsValidRecursion(node->rightChild, node->value, max);
+}
+
+bool bstIsValid(BST* tree)
+{
+    if (tree->root == NULL) {
+        return true;
+    }
+    return bstIsValidRecursion(tree->root, INT_MIN, INT_MAX);
 }
