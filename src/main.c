@@ -8,8 +8,10 @@ int main(void)
     bstInsert(tree, 1);
     assert(bstContains(tree, 1));
     bstInsert(tree, 5);
+    bstInsert(tree, 6);
+    bstInsert(tree, 7);
     assert(bstContains(tree, 5));
+    assert(bstHeight(tree) == 3 && "Неправильная высота дерева");
     bstFree(tree);
-
     return 0;
 }
