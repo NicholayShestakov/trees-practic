@@ -8,11 +8,17 @@ int main(void)
     BST* tree = bstCreate();
     bstInsert(tree, 1);
     bstInsert(tree, 5);
+    bstInsert(tree, 6);
+    bstInsert(tree, 7);
+    assert(bstContains(tree, 5));
+    assert(bstHeight(tree) == 3 && "Неправильная высота дерева");
     bstInsert(tree, 3);
     bstInsert(tree, 8);
     bstInsert(tree, 11);
     bstInsert(tree, 42);
     bstInsert(tree, 15);
+    // проверка на размер дерева
+    assert(bstSize(tree) == 9 && "Неправильно вычисленный размер дерева");
     // Прямой обход, должно напечатать: 1, 5, 3, 8, 11, 42, 15
     bstPreorder(tree);
     // Симметричный обход, должно напечатать: 1, 3, 5, 8, 11, 15, 42
