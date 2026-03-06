@@ -8,6 +8,19 @@ int main(void)
     BST* tree = bstCreate();
     bstInsert(tree, 1);
     bstInsert(tree, 5);
+    assert(bstContains(tree, 5));
+
+    // Блок кода для теста итератора.
+    bstInsert(tree, 4);
+    bstInsert(tree, 2);
+    bstInsert(tree, 3);
+    Iterator* iter = iteratorInit(tree);
+    while (iteratorHasNext(iter)) {
+        printf("%d ", iteratorNext(iter));
+    }
+    printf("\n");
+    iteratorFree(iter);
+
     bstInsert(tree, 3);
     bstInsert(tree, 8);
     bstInsert(tree, 11);
@@ -20,5 +33,6 @@ int main(void)
     // Обратный обход, должно напечатать: 3, 15, 42, 11, 8, 5, 1
     bstPostorder(tree);
     bstFree(tree);
+
     return 0;
 }
