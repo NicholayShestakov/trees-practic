@@ -190,5 +190,6 @@ bool bstIsValid(BST* tree)
     if (tree->root == NULL) {
         return true;
     }
+    // INT_MIN и INT_MAX взяты из библиотеки limits.h
     return bstIsValidRecursion(tree->root, INT_MIN, INT_MAX);
 }
