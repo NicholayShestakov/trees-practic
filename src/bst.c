@@ -17,7 +17,6 @@ typedef struct BST {
 BST* bstCreate(void)
 {
     BST* tree = calloc(1, sizeof(*tree));
-    assert(tree != NULL && "Ошибка выделения памяти при создании дерева.");
     return tree;
 }
 
@@ -154,7 +153,6 @@ int bstMin(BST* tree)
     if (tree->root == NULL) {
         return -1;
     }
-
     Node* currentNode = tree->root;
     while (currentNode->leftChild != NULL) {
         currentNode = currentNode->leftChild;
@@ -187,8 +185,8 @@ bool bstIsValidRecursion(Node* node, int min, int max)
 
 bool bstIsValid(BST* tree)
 {
-    if (tree->root == NULL) {
-        return true;
+    if (tree == NULL) {
+        return false;
     }
     // INT_MIN и INT_MAX взяты из библиотеки limits.h
     return bstIsValidRecursion(tree->root, INT_MIN, INT_MAX);
