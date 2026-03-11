@@ -13,6 +13,7 @@ typedef struct Node {
 
 typedef struct BST {
     Node* root;
+    int size;
 } BST;
 
 typedef struct Iterator {
@@ -22,7 +23,6 @@ typedef struct Iterator {
 BST* bstCreate(void)
 {
     BST* tree = calloc(1, sizeof(*tree));
-    assert(tree != NULL && "Ошибка выделения памяти при создании дерева.");
     return tree;
 }
 
@@ -40,6 +40,7 @@ void bstInsert(BST* tree, int value)
         if (currentNode->value > value) {
             if (currentNode->leftChild == NULL) {
                 currentNode->leftChild = newNode;
+                tree->size++;
                 return;
             }
             currentNode = currentNode->leftChild;
@@ -47,12 +48,14 @@ void bstInsert(BST* tree, int value)
         if (currentNode->value < value) {
             if (currentNode->rightChild == NULL) {
                 currentNode->rightChild = newNode;
+                tree->size++;
                 return;
             }
             currentNode = currentNode->rightChild;
         }
     }
     tree->root = newNode;
+    tree->size++;
 }
 
 bool bstContains(BST* tree, int value)
@@ -226,4 +229,56 @@ int bstKthMin(BST* tree, int k)
     assert(k > 0 && "Ошибка! Некорретное значение k");
     assert(k <= bstSize(tree) && "Ошибка! Некорретное значение k");
     return bstKthMinRecursion(tree->root, &k);
+}
+
+// ----------------------------------------------
+
+int bstSize(BST* tree)
+{
+    return tree->size;
+}
+
+// Внутренняя функция, не доступная пользователю.
+// Рекурсивно добавляет элементы в переданный массив
+void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int* index)
+{
+    if (node == NULL || arr == NULL) {
+        return;
+    }
+    arr[(*index)++] = node->value;
+    bstPreorderRecursionAddingNodesInArr(node->leftChild, arr, index);
+    bstPreorderRecursionAddingNodesInArr(node->rightChild, arr, index);
+}
+
+int* getAllNodesFromTree(BST* tree)
+{
+    int size = bstSize(tree);
+    if (size == 0) {
+        return NULL;
+    }
+    int* arrWithNodes = calloc(size, sizeof(int));
+    if (arrWithNodes == NULL) {
+        return NULL;
+    }
+    int index = 0;
+    bstPreorderRecursionAddingNodesInArr(tree->root, arrWithNodes, &index);
+    return arrWithNodes;
+}
+
+BST* bstMerge(BST* tree1, BST* tree2)
+{
+    int size1 = bstSize(tree1);
+    int size2 = bstSize(tree2);
+    int* nodes1 = getAllNodesFromTree(tree1);
+    int* nodes2 = getAllNodesFromTree(tree2);
+    BST* newTree = bstCreate();
+    for (int i = 0; i < size1; i++) {
+        bstInsert(newTree, nodes1[i]);
+    }
+    for (int j = 0; j < size2; j++) {
+        bstInsert(newTree, nodes2[j]);
+    }
+    free(nodes1);
+    free(nodes2);
+    return newTree;
 }
