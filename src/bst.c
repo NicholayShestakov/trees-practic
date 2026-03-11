@@ -118,22 +118,6 @@ int bstHeight(BST* tree)
     return height - 1;
 }
 
-int bstSizeRecursion(Node* node)
-{
-    if (node == NULL) {
-        return 0;
-    }
-    return bstSizeRecursion(node->leftChild) + bstSizeRecursion(node->rightChild) + 1;
-}
-
-int bstSize(BST* tree)
-{
-    if (tree->root == NULL) {
-        return 0;
-    }
-    return bstSizeRecursion(tree->root->leftChild) + bstSizeRecursion(tree->root->rightChild) + 1;
-}
-
 int bstMin(BST* tree)
 {
     if (tree->root == NULL) {
@@ -202,7 +186,6 @@ void iteratorFree(Iterator* iterator)
 {
     deleteStack(iterator->nodeStack);
     free(iterator);
->>>>>>> main
 }
 
 void bstPreorderRecursion(Node* node)
