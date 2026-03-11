@@ -164,8 +164,7 @@ void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int size, int* i
     if (node == NULL || arr == NULL) {
         return;
     }
-    arr[*index] = node->value;
-    (*index)++;
+    arr[(*index)++] = node->value;
     bstPreorderRecursionAddingNodesInArr(node->leftChild, arr, size, index);
     bstPreorderRecursionAddingNodesInArr(node->rightChild, arr, size, index);
 }
