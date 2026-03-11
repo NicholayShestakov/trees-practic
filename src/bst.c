@@ -17,7 +17,6 @@ typedef struct BST {
 BST* bstCreate(void)
 {
     BST* tree = calloc(1, sizeof(*tree));
-    assert(tree != NULL && "Ошибка выделения памяти при создании дерева.");
     return tree;
 }
 
@@ -179,7 +178,7 @@ int* getAllNodesFromTree(BST* tree)
     if (size == 0) {
         return NULL;
     }
-    int* arrWithNodes = malloc(sizeof(int) * size);
+    int* arrWithNodes = calloc(size, sizeof(int));
     if (arrWithNodes == NULL) {
         return NULL;
     }
