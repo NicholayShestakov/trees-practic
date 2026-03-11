@@ -1,4 +1,6 @@
 #include "bst.h"
+
+#include "stack.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,12 +13,16 @@ typedef struct Node {
 
 typedef struct BST {
     Node* root;
+    int size;
 } BST;
+
+typedef struct Iterator {
+    Stack* nodeStack;
+} Iterator;
 
 BST* bstCreate(void)
 {
     BST* tree = calloc(1, sizeof(*tree));
-    assert(tree != NULL && "Ошибка выделения памяти при создании дерева.");
     return tree;
 }
 
@@ -33,6 +39,7 @@ void bstInsert(BST* tree, int value)
         if (currentNode->value > value) {
             if (currentNode->leftChild == NULL) {
                 currentNode->leftChild = newNode;
+                tree->size++;
                 return;
             }
             currentNode = currentNode->leftChild;
@@ -40,12 +47,14 @@ void bstInsert(BST* tree, int value)
         if (currentNode->value < value) {
             if (currentNode->rightChild == NULL) {
                 currentNode->rightChild = newNode;
+                tree->size++;
                 return;
             }
             currentNode = currentNode->rightChild;
         }
     }
     tree->root = newNode;
+    tree->size++;
 }
 
 bool bstContains(BST* tree, int value)
@@ -148,6 +157,53 @@ int bstMax(BST* tree)
     }
     return currentNode->value;
 }
+// Добавляет всю левую палку данной ноды в стек, начиная от ближайшего.
+// Под палкой здесь подразумеваются элементы, по которым мы проходим, идя всё время именно влево, включая саму ноду.
+void addLeftStickInStack(Stack* stack, Node* node)
+{
+    Node* currentNode = node;
+    while (currentNode != NULL) {
+        push(stack, currentNode);
+        currentNode = currentNode->leftChild;
+    }
+}
+
+Iterator* iteratorInit(BST* tree)
+{
+    Iterator* iterator = malloc(sizeof(*iterator));
+    assert(iterator != NULL && "А вот на итератор-то памяти и не хватило. Ошибка.");
+
+    Stack* stack = createStack();
+    addLeftStickInStack(stack, tree->root);
+
+    iterator->nodeStack = stack;
+    return iterator;
+}
+
+bool iteratorHasNext(Iterator* iterator)
+{
+    return !isEmpty(iterator->nodeStack);
+}
+
+int iteratorNext(Iterator* iterator)
+{
+    assert(iteratorHasNext(iterator) && "Ошибка! Кончился у вас итератор! Нету его больше! Всё!");
+    Node* node = pop(iterator->nodeStack);
+    int value = node->value;
+
+    if (node->rightChild != NULL) {
+        addLeftStickInStack(iterator->nodeStack, node->rightChild);
+    }
+
+    return value;
+}
+
+void iteratorFree(Iterator* iterator)
+{
+    deleteStack(iterator->nodeStack);
+    free(iterator);
+>>>>>>> main
+}
 
 void bstPreorderRecursion(Node* node)
 {
@@ -204,4 +260,56 @@ void bstPostorder(BST* tree)
     }
     bstPostorderRecursion(tree->root);
     printf("\n");
+}
+
+// ----------------------------------------------
+
+int bstSize(BST* tree)
+{
+    return tree->size;
+}
+
+// Внутренняя функция, не доступная пользователю.
+// Рекурсивно добавляет элементы в переданный массив
+void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int* index)
+{
+    if (node == NULL || arr == NULL) {
+        return;
+    }
+    arr[(*index)++] = node->value;
+    bstPreorderRecursionAddingNodesInArr(node->leftChild, arr, index);
+    bstPreorderRecursionAddingNodesInArr(node->rightChild, arr, index);
+}
+
+int* getAllNodesFromTree(BST* tree)
+{
+    int size = bstSize(tree);
+    if (size == 0) {
+        return NULL;
+    }
+    int* arrWithNodes = calloc(size, sizeof(int));
+    if (arrWithNodes == NULL) {
+        return NULL;
+    }
+    int index = 0;
+    bstPreorderRecursionAddingNodesInArr(tree->root, arrWithNodes, &index);
+    return arrWithNodes;
+}
+
+BST* bstMerge(BST* tree1, BST* tree2)
+{
+    int size1 = bstSize(tree1);
+    int size2 = bstSize(tree2);
+    int* nodes1 = getAllNodesFromTree(tree1);
+    int* nodes2 = getAllNodesFromTree(tree2);
+    BST* newTree = bstCreate();
+    for (int i = 0; i < size1; i++) {
+        bstInsert(newTree, nodes1[i]);
+    }
+    for (int j = 0; j < size2; j++) {
+        bstInsert(newTree, nodes2[j]);
+    }
+    free(nodes1);
+    free(nodes2);
+    return newTree;
 }
