@@ -17,6 +17,7 @@ typedef struct BST {
 BST* bstCreate(void)
 {
     BST* tree = calloc(1, sizeof(*tree));
+    tree->size = 0;
     return tree;
 }
 
@@ -155,9 +156,6 @@ void bstPostorder(BST* tree)
 
 int bstSize(BST* tree)
 {
-    if (tree->root == NULL) {
-        return 0;
-    }
     return tree->size;
 }
 
