@@ -11,6 +11,7 @@ typedef struct Node {
 
 typedef struct BST {
     Node* root;
+    int size;
 } BST;
 
 BST* bstCreate(void)
@@ -34,6 +35,7 @@ void bstInsert(BST* tree, int value)
         if (currentNode->value > value) {
             if (currentNode->leftChild == NULL) {
                 currentNode->leftChild = newNode;
+                tree->size++;
                 return;
             }
             currentNode = currentNode->leftChild;
@@ -41,12 +43,14 @@ void bstInsert(BST* tree, int value)
         if (currentNode->value < value) {
             if (currentNode->rightChild == NULL) {
                 currentNode->rightChild = newNode;
+                tree->size++;
                 return;
             }
             currentNode = currentNode->rightChild;
         }
     }
     tree->root = newNode;
+    tree->size++;
 }
 
 bool bstContains(BST* tree, int value)
@@ -150,20 +154,12 @@ void bstPostorder(BST* tree)
 
 // ----------------------------------------------
 
-int bstSizeRecursion(Node* node)
-{
-    if (node == NULL) {
-        return 0;
-    }
-    return bstSizeRecursion(node->leftChild) + bstSizeRecursion(node->rightChild) + 1;
-}
-
 int bstSize(BST* tree)
 {
     if (tree->root == NULL) {
         return 0;
     }
-    return bstSizeRecursion(tree->root->leftChild) + bstSizeRecursion(tree->root->rightChild) + 1;
+    return tree->size;
 }
 
 void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int size, int* index)
@@ -177,13 +173,16 @@ void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int size, int* i
     bstPreorderRecursionAddingNodesInArr(node->rightChild, arr, size, index);
 }
 
-int* getAllNodesFromTree(BST* tree, int size)
+int* getAllNodesFromTree(BST* tree)
 {
-
+    int size = bstSize(tree);
     if (size == 0) {
         return NULL;
     }
     int* arrWithNodes = malloc(sizeof(int) * size);
+    if (arrWithNodes == NULL) {
+        return NULL;
+    }
     int index = 0;
     bstPreorderRecursionAddingNodesInArr(tree->root, arrWithNodes, size, &index);
     return arrWithNodes;
@@ -193,8 +192,8 @@ BST* bstMerge(BST* tree1, BST* tree2)
 {
     int size1 = bstSize(tree1);
     int size2 = bstSize(tree2);
-    int* nodes1 = getAllNodesFromTree(tree1, size1);
-    int* nodes2 = getAllNodesFromTree(tree2, size2);
+    int* nodes1 = getAllNodesFromTree(tree1);
+    int* nodes2 = getAllNodesFromTree(tree2);
     BST* newTree = bstCreate();
     for (int i = 0; i < size1; i++) {
         bstInsert(newTree, nodes1[i]);
