@@ -30,7 +30,6 @@ void bstInsert(BST* tree, int value)
 {
     Node* newNode = calloc(1, sizeof(*newNode));
     newNode->value = value;
-
     Node* currentNode = tree->root;
     while (currentNode != NULL) {
         if (currentNode->value == value) {
@@ -100,6 +99,48 @@ void bstFree(BST* tree)
     free(tree);
 }
 
+int bstHeightRecursion(Node* node)
+{
+    if (node == NULL) {
+        return 0;
+    }
+    int leftHeight = bstHeightRecursion(node->leftChild);
+    int rightHeight = bstHeightRecursion(node->rightChild);
+    return 1 + (leftHeight > rightHeight ? leftHeight : rightHeight);
+}
+
+int bstHeight(BST* tree)
+{
+    if (tree->root == NULL) {
+        return 0;
+    }
+    int height = bstHeightRecursion(tree->root);
+    return height - 1;
+}
+
+int bstMin(BST* tree)
+{
+    if (tree->root == NULL) {
+        return -1;
+    }
+    Node* currentNode = tree->root;
+    while (currentNode->leftChild != NULL) {
+        currentNode = currentNode->leftChild;
+    }
+    return currentNode->value;
+}
+
+int bstMax(BST* tree)
+{
+    if (tree->root == NULL) {
+        return -1;
+    }
+    Node* currentNode = tree->root;
+    while (currentNode->rightChild != NULL) {
+        currentNode = currentNode->rightChild;
+    }
+    return currentNode->value;
+}
 // Добавляет всю левую палку данной ноды в стек, начиная от ближайшего.
 // Под палкой здесь подразумеваются элементы, по которым мы проходим, идя всё время именно влево, включая саму ноду.
 void addLeftStickInStack(Stack* stack, Node* node)
