@@ -1,4 +1,6 @@
 #include "bst.h"
+
+#include "stack.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +15,10 @@ typedef struct BST {
     Node* root;
     int size;
 } BST;
+
+typedef struct Iterator {
+    Stack* nodeStack;
+} Iterator;
 
 BST* bstCreate(void)
 {
@@ -93,6 +99,53 @@ void bstFree(BST* tree)
     }
     bstFreeRecursion(tree->root);
     free(tree);
+}
+
+// Добавляет всю левую палку данной ноды в стек, начиная от ближайшего.
+// Под палкой здесь подразумеваются элементы, по которым мы проходим, идя всё время именно влево, включая саму ноду.
+void addLeftStickInStack(Stack* stack, Node* node)
+{
+    Node* currentNode = node;
+    while (currentNode != NULL) {
+        push(stack, currentNode);
+        currentNode = currentNode->leftChild;
+    }
+}
+
+Iterator* iteratorInit(BST* tree)
+{
+    Iterator* iterator = malloc(sizeof(*iterator));
+    assert(iterator != NULL && "А вот на итератор-то памяти и не хватило. Ошибка.");
+
+    Stack* stack = createStack();
+    addLeftStickInStack(stack, tree->root);
+
+    iterator->nodeStack = stack;
+    return iterator;
+}
+
+bool iteratorHasNext(Iterator* iterator)
+{
+    return !isEmpty(iterator->nodeStack);
+}
+
+int iteratorNext(Iterator* iterator)
+{
+    assert(iteratorHasNext(iterator) && "Ошибка! Кончился у вас итератор! Нету его больше! Всё!");
+    Node* node = pop(iterator->nodeStack);
+    int value = node->value;
+
+    if (node->rightChild != NULL) {
+        addLeftStickInStack(iterator->nodeStack, node->rightChild);
+    }
+
+    return value;
+}
+
+void iteratorFree(Iterator* iterator)
+{
+    deleteStack(iterator->nodeStack);
+    free(iterator);
 }
 
 void bstPreorderRecursion(Node* node)
