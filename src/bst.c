@@ -23,7 +23,6 @@ typedef struct Iterator {
 BST* bstCreate(void)
 {
     BST* tree = calloc(1, sizeof(*tree));
-    tree->size = 0;
     return tree;
 }
 
@@ -214,14 +213,14 @@ int bstSize(BST* tree)
 
 // Внутренняя функция, не доступная пользователю.
 // Рекурсивно добавляет элементы в переданный массив
-void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int size, int* index)
+void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int* index)
 {
     if (node == NULL || arr == NULL) {
         return;
     }
     arr[(*index)++] = node->value;
-    bstPreorderRecursionAddingNodesInArr(node->leftChild, arr, size, index);
-    bstPreorderRecursionAddingNodesInArr(node->rightChild, arr, size, index);
+    bstPreorderRecursionAddingNodesInArr(node->leftChild, arr, index);
+    bstPreorderRecursionAddingNodesInArr(node->rightChild, arr, index);
 }
 
 int* getAllNodesFromTree(BST* tree)
@@ -235,7 +234,7 @@ int* getAllNodesFromTree(BST* tree)
         return NULL;
     }
     int index = 0;
-    bstPreorderRecursionAddingNodesInArr(tree->root, arrWithNodes, size, &index);
+    bstPreorderRecursionAddingNodesInArr(tree->root, arrWithNodes, &index);
     return arrWithNodes;
 }
 
