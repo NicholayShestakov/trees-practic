@@ -65,8 +65,8 @@ int main(void)
     assert(bstContains(tree1MergeTree2, 15) && "В дереве нет нужного элемента");
     // должно напечатать 1, 5, 3, 8, 11, 42, 15
     bstPreorder(tree1MergeTree2);
-    free(tree1MergeTree2);
-    free(emptyTree);
+    bstFree(tree1MergeTree2);
+    bstFree(emptyTree);
     bstFree(tree1);
     bstFree(tree2);
     return 0;
