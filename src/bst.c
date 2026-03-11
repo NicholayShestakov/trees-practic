@@ -200,3 +200,30 @@ void bstPostorder(BST* tree)
     bstPostorderRecursion(tree->root);
     printf("\n");
 }
+
+int bstKthMinRecursion(Node* node, int* k)
+{
+    if (node == NULL) {
+        return -1;
+    }
+
+    int res = bstKthMinRecursion(node->leftChild, k);
+    if (res != -1) {
+        return res;
+    }
+
+    (*k)--;
+    if (*k == 0) {
+        return node->value;
+    }
+
+    return bstKthMinRecursion(node->rightChild, k);
+}
+
+int bstKthMin(BST* tree, int k)
+{
+    assert(tree != NULL && "Ошибка! Дерево не существует");
+    assert(k > 0 && "Ошибка! Некорретное значение k");
+    assert(k <= bstSize(tree) && "Ошибка! Некорретное значение k");
+    return bstKthMinRecursion(tree->root, &k);
+}
