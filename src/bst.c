@@ -177,14 +177,13 @@ void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int size, int* i
     bstPreorderRecursionAddingNodesInArr(node->rightChild, arr, size, index);
 }
 
-int* getAllNodesFormTree(BST* tree, int size)
+int* getAllNodesFromTree(BST* tree, int size)
 {
+
     if (size == 0) {
-        printf("Дерево пустое, узлов нет.\n");
         return NULL;
     }
     int* arrWithNodes = malloc(sizeof(int) * size);
-    assert(arrWithNodes != NULL && "Кажется, ошибка выделения памяти.");
     int index = 0;
     bstPreorderRecursionAddingNodesInArr(tree->root, arrWithNodes, size, &index);
     return arrWithNodes;
@@ -194,16 +193,14 @@ BST* bstMerge(BST* tree1, BST* tree2)
 {
     int size1 = bstSize(tree1);
     int size2 = bstSize(tree2);
-    int* nodes1 = getAllNodesFormTree(tree1, size1);
-    int* nodes2 = getAllNodesFormTree(tree2, size2);
+    int* nodes1 = getAllNodesFromTree(tree1, size1);
+    int* nodes2 = getAllNodesFromTree(tree2, size2);
     BST* newTree = bstCreate();
     for (int i = 0; i < size1; i++) {
         bstInsert(newTree, nodes1[i]);
     }
     for (int j = 0; j < size2; j++) {
-        if (!bstContains(newTree, nodes2[j])) {
-            bstInsert(newTree, nodes2[j]);
-        }
+        bstInsert(newTree, nodes2[j]);
     }
     free(nodes1);
     free(nodes2);
