@@ -159,6 +159,8 @@ int bstSize(BST* tree)
     return tree->size;
 }
 
+// Внутренняя функция, не доступная пользователю.
+// Рекурсивно добавляет элементы в переданный массив
 void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int size, int* index)
 {
     if (node == NULL || arr == NULL) {
