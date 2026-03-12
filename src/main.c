@@ -11,7 +11,6 @@ int main(void)
     bstInsert(tree, 6);
     bstInsert(tree, 7);
     assert(bstContains(tree, 5));
-    assert(bstContains(tree, 5));
 
     // Блок кода для теста итератора.
     bstInsert(tree, 4);
@@ -30,8 +29,7 @@ int main(void)
     bstInsert(tree, 15);
 
     // проверка на размер дерева
-    assert(bstSize(tree) == 9 && "Неправильно вычисленный размер дерева");
-    assert(bstSize(tree) == 7 && "Ошибка в подсчете размера дерева");
+    assert(bstSize(tree) == 11 && "Неправильно вычисленный размер дерева");
     BST* emptyTree = bstCreate();
     assert(bstSize(emptyTree) == 0 && "Ошибка в подсчете размера пустого дерева");
 

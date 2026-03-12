@@ -257,7 +257,7 @@ bool bstIsValidRecursion(Node* node, int* min, int* max)
     if (max != NULL && node->value >= *max) {
         return false;
     }
-    return bstIsValidRecursion(node->leftChild, min, node->value) && bstIsValidRecursion(node->rightChild, node->value, max);
+    return bstIsValidRecursion(node->leftChild, min, &node->value) && bstIsValidRecursion(node->rightChild, &node->value, max);
 }
 
 bool bstIsValid(BST* tree)
