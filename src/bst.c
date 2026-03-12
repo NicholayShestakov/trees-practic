@@ -245,6 +245,28 @@ void bstPostorder(BST* tree)
     printf("\n");
 }
 
+bool bstIsValidRecursion(Node* node, int* min, int* max)
+{
+    if (node == NULL) {
+        return true;
+    }
+    if (min != NULL && node->value <= *min) {
+        return false;
+    }
+
+    if (max != NULL && node->value >= *max) {
+        return false;
+    }
+    return bstIsValidRecursion(node->leftChild, min, &node->value) && bstIsValidRecursion(node->rightChild, &node->value, max);
+}
+
+bool bstIsValid(BST* tree)
+{
+    if (tree == NULL) {
+        return false;
+    }
+    return bstIsValidRecursion(tree->root, NULL, NULL);
+}
 // ----------------------------------------------
 
 int bstSize(BST* tree)
