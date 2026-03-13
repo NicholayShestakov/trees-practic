@@ -8,6 +8,8 @@ int main(void)
     BST* tree = bstCreate();
     bstInsert(tree, 1);
     bstInsert(tree, 5);
+    bstInsert(tree, 6);
+    bstInsert(tree, 7);
     assert(bstContains(tree, 5));
 
     // Блок кода для теста итератора.
@@ -20,14 +22,14 @@ int main(void)
     }
     printf("\n");
     iteratorFree(iter);
-
     bstInsert(tree, 3);
     bstInsert(tree, 8);
     bstInsert(tree, 11);
     bstInsert(tree, 42);
     bstInsert(tree, 15);
+
     // проверка на размер дерева
-    assert(bstSize(tree) == 7 && "Ошибка в подсчете размера дерева");
+    assert(bstSize(tree) == 11 && "Неправильно вычисленный размер дерева");
     BST* emptyTree = bstCreate();
     assert(bstSize(emptyTree) == 0 && "Ошибка в подсчете размера пустого дерева");
 
@@ -37,6 +39,14 @@ int main(void)
     bstInorder(tree);
     // Обратный обход, должно напечатать: 3, 15, 42, 11, 8, 5, 1
     bstPostorder(tree);
+
+    // проверка на максимальное и минимальные значения
+    assert(bstMax(tree) == 42 && "Ошибка в выявлении максимального узла");
+    assert(bstMin(tree) == 1 && "Ошибка в выявлении минимального узла");
+
+    // проверка на корректность дерева
+    assert(bstIsValid(tree) && "Ошибка в проверке корректности дерева");
+
     bstFree(tree);
 
     // проверка на слияние деревьев
@@ -61,8 +71,8 @@ int main(void)
     assert(bstContains(tree1MergeTree2, 15) && "В дереве нет нужного элемента");
     // должно напечатать 1, 5, 3, 8, 11, 42, 15
     bstPreorder(tree1MergeTree2);
-    free(tree1MergeTree2);
-    free(emptyTree);
+    bstFree(tree1MergeTree2);
+    bstFree(emptyTree);
     bstFree(tree1);
     bstFree(tree2);
     return 0;
