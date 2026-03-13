@@ -367,12 +367,11 @@ void bstDelete(BST* tree, int value)
 
         else if (parnt->leftChild == current) {
             parnt->leftChild = NULL;
-            free(current);
 
         } else {
             parnt->rightChild = NULL;
-            free(current);
         }
+        free(current);
     }
 
     else if (current->leftChild == NULL || current->rightChild == NULL) {
@@ -394,11 +393,10 @@ void bstDelete(BST* tree, int value)
 
         else if (parnt->leftChild == current) {
             parnt->leftChild = temp;
-            free(current);
         } else {
             parnt->rightChild = temp;
-            free(current);
         }
+        free(current);
     }
 
     else {
