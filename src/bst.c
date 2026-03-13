@@ -404,7 +404,7 @@ void bstDelete(BST* tree, int value)
 
         int minRightValue = minRight->value;
 
-        Node* minRightParent = parent(tree->root, minRight);
+        Node* minRightParent = parent(tree, minRight);
 
         if (minRightParent->leftChild == minRight) {
             minRightParent->leftChild = minRight->rightChild;
