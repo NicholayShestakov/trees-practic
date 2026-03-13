@@ -300,7 +300,7 @@ BST* bstMerge(BST* tree1, BST* tree2)
 Node* parentRecursive(Node* root, Node* node)
 {
     if (root == NULL) {
-        return;
+        return NULL;
     }
 
     else if (root->leftChild == node || root->rightChild == node) {
@@ -321,7 +321,7 @@ Node* parentRecursive(Node* root, Node* node)
 Node* parent(BST* tree, Node* node)
 {
     if (tree == NULL || tree->root == NULL || tree->root == node) {
-        return;
+        return NULL;
     }
 
     return parentRecursive(tree->root, node);
@@ -362,7 +362,7 @@ void bstDelete(BST* tree, int value)
         Node* parnt = parent(tree, current);
 
         if (parnt == NULL) {
-            tree->root == NULL;
+            tree->root = NULL;
         }
 
         else if (parnt->leftChild == current) {
@@ -380,10 +380,10 @@ void bstDelete(BST* tree, int value)
         Node* temp = NULL;
 
         if (current->rightChild != NULL) {
-            Node* temp = current->rightChild;
+            temp = current->rightChild;
 
         } else {
-            Node* temp = current->leftChild;
+            temp = current->leftChild;
         }
 
         Node* parnt = parent(tree, current);
