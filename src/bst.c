@@ -326,7 +326,7 @@ Node* parent(BST* tree, Node* node)
 
     return parentRecursive(tree->root, node);
 }
-int minRightTree(Node* node)
+Node* minRightTree(Node* node)
 {
     Node* current = node->rightChild;
 
@@ -334,7 +334,7 @@ int minRightTree(Node* node)
         current = current->leftChild;
     }
 
-    return current->value;
+    return current;
 }
 
 void bstDelete(BST* tree, int value)
@@ -388,7 +388,7 @@ void bstDelete(BST* tree, int value)
         Node* parnt = parent(tree, current);
 
         if (parnt == NULL) {
-            return;
+            tree->root = temp;
         }
 
         else if (parnt->leftChild == current) {
@@ -400,10 +400,18 @@ void bstDelete(BST* tree, int value)
     }
 
     else {
-        int minRight = minRightTree(current);
+        Node* minRight = minRightTree(current);
 
-        bstDelete(tree, minRight);
+        int minRightValue = minRight->value;
 
-        current->value = minRight;
+        Node* minRightParent = parent(tree->root, minRight);
+
+        if (minRightParent->leftChild == minRight) {
+            minRightParent->leftChild = minRight->rightChild;
+        } else {
+            minRightParent->rightChild = minRight->rightChild;
+        }
+        current->value = minRightValue;
+        free(minRight);
     }
 }
