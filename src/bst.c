@@ -296,3 +296,116 @@ BST* bstMerge(BST* tree1, BST* tree2)
     free(nodes2);
     return newTree;
 }
+
+Node* parentRecursive(Node* root, Node* node)
+{
+    if (root == NULL) {
+        return;
+    }
+
+    else if (root->leftChild == node || root->rightChild == node) {
+        return root;
+    }
+
+    else {
+        Node* leftParent = parentRecursive(root->leftChild, node);
+        return leftParent;
+
+        Node* rightParent = parentRecursive(root->rightChild, node);
+        return rightParent;
+    }
+
+    return NULL;
+}
+
+Node* parent(BST* tree, Node* node)
+{
+    if (tree == NULL || tree->root == NULL || tree->root == node) {
+        return;
+    }
+
+    return parentRecursive(tree->root, node);
+}
+int minRightTree(Node* node)
+{
+    Node* current = node->rightChild;
+
+    while (current->leftChild != NULL) {
+        current = current->leftChild;
+    }
+
+    return current->value;
+}
+
+void bstDelete(BST* tree, int value)
+{
+    if (tree == NULL || tree->root == NULL) {
+        return;
+    }
+
+    Node* current = tree->root;
+
+    while (current->value != value) {
+
+        if (value < current->value) {
+            current = current->leftChild;
+        } else {
+            current = current->rightChild;
+        }
+    }
+
+    if (current == NULL) {
+        return;
+    }
+
+    if (current->leftChild == NULL && current->rightChild == NULL) {
+        Node* parnt = parent(tree, current);
+
+        if (parnt == NULL) {
+            tree->root == NULL;
+        }
+
+        else if (parnt->leftChild == current) {
+            parnt->leftChild = NULL;
+            free(current);
+
+        } else {
+            parnt->rightChild = NULL;
+            free(current);
+        }
+    }
+
+    else if (current->leftChild == NULL || current->rightChild == NULL) {
+
+        Node* temp = NULL;
+
+        if (current->rightChild != NULL) {
+            Node* temp = current->rightChild;
+
+        } else {
+            Node* temp = current->leftChild;
+        }
+
+        Node* parnt = parent(tree, current);
+
+        if (parnt == NULL) {
+            return;
+        }
+
+        else if (parnt->leftChild == current) {
+            parnt->leftChild = temp;
+            free(current);
+        } else {
+            parnt->rightChild = temp;
+            free(current);
+        }
+    }
+
+    else {
+        int minRight = minRightTree(current);
+
+        bstDelete(tree, minRight);
+
+        current->value = minRight;
+    }
+}
