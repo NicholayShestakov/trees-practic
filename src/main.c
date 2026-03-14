@@ -75,5 +75,19 @@ int main(void)
     bstFree(emptyTree);
     bstFree(tree1);
     bstFree(tree2);
+
+    // Проверка на корректную работу функции нахождения k - ого минимального элемента
+    BST* treeG = bstCreate();
+
+    bstInsert(treeG, 1);
+    bstInsert(treeG, 5);
+    bstInsert(treeG, 3);
+    bstInsert(treeG, 10);
+
+    assert(bstKthMin(treeG, 1) == 1 && "Функция работает некорректно");
+    assert(bstKthMin(treeG, 2) == 3 && "Функция работает некорректно");
+    assert(bstKthMin(treeG, 1) == 5 && "Функция работает некорректно");
+    assert(bstKthMin(treeG, 1) == 10 && "Функция работает некорректно");
+
     return 0;
 }
