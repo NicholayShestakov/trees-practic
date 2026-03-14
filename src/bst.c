@@ -271,7 +271,7 @@ int bstKthMin(BST* tree, int k)
         return -1;
     }
 
-    if (k < 0) {
+    if (k <= 0) {
         printf("Ошибка! Некорретное значение k");
         return -1;
     }
