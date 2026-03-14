@@ -266,17 +266,17 @@ int bstKthMinRecursion(Node* node, int* k)
 
 int bstKthMin(BST* tree, int k)
 {
-    if (tree != NULL) {
+    if (tree == NULL) {
         printf("Ошибка! Дерево не существует");
         return -1;
     }
 
-    if (k > 0) {
+    if (k < 0) {
         printf("Ошибка! Некорретное значение k");
         return -1;
     }
 
-    if (k <= bstSize(tree)) {
+    if (k > bstSize(tree)) {
         printf("Ошибка! Некорретное значение k");
         return -1;
     }
