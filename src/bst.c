@@ -318,7 +318,7 @@ Node* parentRecursive(Node* root, Node* node)
     return NULL;
 }
 
-Node* parent(BST* tree, Node* node)
+Node* findParent(BST* tree, Node* node)
 {
     if (tree == NULL || tree->root == NULL || tree->root == node) {
         return NULL;
@@ -326,8 +326,12 @@ Node* parent(BST* tree, Node* node)
 
     return parentRecursive(tree->root, node);
 }
-Node* minRightTree(Node* node)
+Node* minRightTree(Node* node) // Функция, находящая минимальный элемент в правом поддереве
 {
+    if (node == NULL || node->rightChild == NULL) {
+        return NULL;
+    }
+
     Node* current = node->rightChild;
 
     while (current->leftChild != NULL) {
@@ -345,7 +349,7 @@ void bstDelete(BST* tree, int value)
 
     Node* current = tree->root;
 
-    while (current->value != value) {
+    while (current != NULL && current->value != value) {
 
         if (value < current->value) {
             current = current->leftChild;
@@ -359,19 +363,24 @@ void bstDelete(BST* tree, int value)
     }
 
     if (current->leftChild == NULL && current->rightChild == NULL) {
-        Node* parnt = parent(tree, current);
 
-        if (parnt == NULL) {
-            tree->root = NULL;
-        }
+        Node* parent = findParent(tree, current);
 
-        else if (parnt->leftChild == current) {
-            parnt->leftChild = NULL;
+        if (parent == NULL) {
+            if (tree->root == current) {
+                tree->root = NULL;
+            } else {
+                return;
+            }
+
+        } else if (parent->leftChild == current) {
+            parent->leftChild = NULL;
 
         } else {
-            parnt->rightChild = NULL;
+            parent->rightChild = NULL;
         }
         free(current);
+        tree->size--;
     }
 
     else if (current->leftChild == NULL || current->rightChild == NULL) {
@@ -385,18 +394,17 @@ void bstDelete(BST* tree, int value)
             temp = current->leftChild;
         }
 
-        Node* parnt = parent(tree, current);
+        Node* parent = findParent(tree, current);
 
-        if (parnt == NULL) {
+        if (parent == NULL) {
             tree->root = temp;
-        }
-
-        else if (parnt->leftChild == current) {
-            parnt->leftChild = temp;
+        } else if (parent->leftChild == current) {
+            parent->leftChild = temp;
         } else {
-            parnt->rightChild = temp;
+            parent->rightChild = temp;
         }
         free(current);
+        tree->size--;
     }
 
     else {
@@ -404,7 +412,7 @@ void bstDelete(BST* tree, int value)
 
         int minRightValue = minRight->value;
 
-        Node* minRightParent = parent(tree, minRight);
+        Node* minRightParent = findParent(tree, minRight);
 
         if (minRightParent->leftChild == minRight) {
             minRightParent->leftChild = minRight->rightChild;
@@ -413,5 +421,6 @@ void bstDelete(BST* tree, int value)
         }
         current->value = minRightValue;
         free(minRight);
+        tree->size--;
     }
 }
