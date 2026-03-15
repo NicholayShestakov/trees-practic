@@ -318,3 +318,143 @@ BST* bstMerge(BST* tree1, BST* tree2)
     free(nodes2);
     return newTree;
 }
+
+Node* parentRecursive(Node* parent, Node* node)
+{
+    if (parent == NULL) {
+        /* Функция всегда возвращает NULL, если достигли конца дерева, узел не найден
+         * или узел не найден в поддереве.
+         * Это означает, что NULL может расцениваться как "родитель не найден",
+         * так и "узел не существует в этом поддереве".
+         */
+        return NULL;
+    }
+
+    else if (parent->leftChild == node || parent->rightChild == node) {
+        return parent;
+    }
+
+    else {
+        Node* leftParent = parentRecursive(parent->leftChild, node);
+        if (leftParent != NULL) {
+            return leftParent;
+        }
+
+        return parentRecursive(parent->rightChild, node);
+    }
+}
+
+Node* findParent(BST* tree, Node* node)
+{
+    if (tree == NULL || tree->root == NULL || tree->root == node) {
+        /* При некорректных входных данных и в случае если узел не найден в дереве функция возвращает NULL
+         * Это означает, что NULL может расцениваться как некорректно введенные данные,
+         * случай узел является корнем и узел не найден в дереве.
+         * Замечание: при использовании всегда нужно проверять дерево на корректность,
+         * а также убедиться, что узел принадлежит дереву
+         */
+        return NULL;
+    }
+
+    return parentRecursive(tree->root, node);
+}
+
+Node* minRightTree(Node* node) // Функция, находящая минимальный элемент в правом поддереве
+{
+    // При отсутствии самого узла или правого поддерева функция возвращает NULL
+
+    if (node == NULL || node->rightChild == NULL) {
+        return NULL;
+    }
+
+    Node* current = node->rightChild;
+
+    while (current->leftChild != NULL) {
+        current = current->leftChild;
+    }
+
+    return current;
+}
+
+void bstDelete(BST* tree, int value)
+{
+    if (tree == NULL || tree->root == NULL) {
+        return;
+    }
+
+    Node* current = tree->root;
+
+    while (current != NULL && current->value != value) {
+
+        if (value < current->value) {
+            current = current->leftChild;
+        } else {
+            current = current->rightChild;
+        }
+    }
+
+    if (current == NULL) {
+        return;
+    }
+
+    if (current->leftChild == NULL && current->rightChild == NULL) {
+
+        Node* parent = findParent(tree, current);
+
+        if (parent == NULL) {
+            if (tree->root == current) {
+                tree->root = NULL;
+            } else {
+                return;
+            }
+
+        } else if (parent->leftChild == current) {
+            parent->leftChild = NULL;
+
+        } else {
+            parent->rightChild = NULL;
+        }
+        free(current);
+        tree->size--;
+    }
+
+    else if (current->leftChild == NULL || current->rightChild == NULL) {
+
+        Node* temp = NULL;
+
+        if (current->rightChild != NULL) {
+            temp = current->rightChild;
+        } else {
+            temp = current->leftChild;
+        }
+
+        Node* parent = findParent(tree, current);
+
+        if (parent == NULL) {
+            tree->root = temp;
+        } else if (parent->leftChild == current) {
+            parent->leftChild = temp;
+        } else {
+            parent->rightChild = temp;
+        }
+        free(current);
+        tree->size--;
+    }
+
+    else {
+        Node* minRight = minRightTree(current);
+
+        int minRightValue = minRight->value;
+
+        Node* minRightParent = findParent(tree, minRight);
+
+        if (minRightParent->leftChild == minRight) {
+            minRightParent->leftChild = minRight->rightChild;
+        } else {
+            minRightParent->rightChild = minRight->rightChild;
+        }
+        current->value = minRightValue;
+        free(minRight);
+        tree->size--;
+    }
+}

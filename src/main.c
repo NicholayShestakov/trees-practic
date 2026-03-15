@@ -75,5 +75,42 @@ int main(void)
     bstFree(emptyTree);
     bstFree(tree1);
     bstFree(tree2);
+
+    // Проверка функции удаления
+    BST* treeD = bstCreate();
+
+    bstInsert(treeD, 50);
+    bstInsert(treeD, 30);
+    bstInsert(treeD, 70);
+    bstInsert(treeD, 20);
+    bstInsert(treeD, 40);
+    bstInsert(treeD, 60);
+    bstInsert(treeD, 80);
+
+    // Удаление листа
+    bstDelete(treeD, 20);
+    assert(!bstContains(treeD, 20));
+
+    // Удаление узла с одним ребенком
+    bstDelete(treeD, 30);
+    assert(!bstContains(treeD, 30));
+    assert(bstContains(treeD, 40));
+
+    // Удаление узла с двумя детьми
+    bstDelete(treeD, 70);
+    assert(!bstContains(treeD, 70));
+    assert(bstContains(treeD, 60));
+    assert(bstContains(treeD, 80));
+
+    // Удаление корня
+    bstDelete(treeD, 50);
+    assert(!bstContains(treeD, 50));
+
+    // Проверка оставшихся узлов
+    assert(bstContains(treeD, 40));
+    assert(bstContains(treeD, 60));
+    assert(bstContains(treeD, 80));
+    assert(bstSize(treeD) == 3);
+
     return 0;
 }

@@ -72,3 +72,6 @@ int* getAllNodesFromTree(BST* tree);
 // Изначальные деревья не изменяются
 // В случае удаления смерджинного дерева, изначальные деревья так же не изменяются
 BST* bstMerge(BST* tree1, BST* tree2);
+
+// Функция удаления элемента из дерева по значению
+void bstDelete(BST* tree, int value);
