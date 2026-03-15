@@ -297,37 +297,50 @@ BST* bstMerge(BST* tree1, BST* tree2)
     return newTree;
 }
 
-Node* parentRecursive(Node* root, Node* node)
+Node* parentRecursive(Node* parent, Node* node)
 {
-    if (root == NULL) {
+    if (parent == NULL) {
+        /* Функция всегда возвращает NULL, если достигли конца дерева, узел не найден
+         * или узел не найден в поддереве.
+         * Это означает, что NULL может расцениваться как "родитель не найден",
+         * так и "узел не существует в этом поддереве".
+         */
         return NULL;
     }
 
-    else if (root->leftChild == node || root->rightChild == node) {
-        return root;
+    else if (parent->leftChild == node || parent->rightChild == node) {
+        return parent;
     }
 
     else {
-        Node* leftParent = parentRecursive(root->leftChild, node);
-        return leftParent;
+        Node* leftParent = parentRecursive(parent->leftChild, node);
+        if (leftParent != NULL) {
+            return leftParent;
+        }
 
-        Node* rightParent = parentRecursive(root->rightChild, node);
-        return rightParent;
+        return parentRecursive(parent->rightChild, node);
     }
-
-    return NULL;
 }
 
 Node* findParent(BST* tree, Node* node)
 {
     if (tree == NULL || tree->root == NULL || tree->root == node) {
+        /* При некорректных входных данных и в случае если узел не найден в дереве функция возвращает NULL
+         * Это означает, что NULL может расцениваться как некорректно введенные данные,
+         * случай узел является корнем и узел не найден в дереве.
+         * Замечание: при использовании всегда нужно проверять дерево на корректность,
+         * а также убедиться, что узел принадлежит дереву
+         */
         return NULL;
     }
 
     return parentRecursive(tree->root, node);
 }
+
 Node* minRightTree(Node* node) // Функция, находящая минимальный элемент в правом поддереве
 {
+    // При отсутствии самого узла или правого поддерева функция возвращает NULL
+
     if (node == NULL || node->rightChild == NULL) {
         return NULL;
     }
@@ -389,7 +402,6 @@ void bstDelete(BST* tree, int value)
 
         if (current->rightChild != NULL) {
             temp = current->rightChild;
-
         } else {
             temp = current->leftChild;
         }
