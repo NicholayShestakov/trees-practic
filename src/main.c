@@ -111,7 +111,7 @@ int main(void)
     assert(bstContains(treeD, 60));
     assert(bstContains(treeD, 80));
     assert(bstSize(treeD) == 3);
-  
+
     // Проверка на корректную работу функции нахождения k - ого минимального элемента
     BST* treeG = bstCreate();
 
