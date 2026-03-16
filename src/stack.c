@@ -14,9 +14,7 @@ typedef struct Stack {
 
 Stack* createStack(void)
 {
-    Stack* stack = calloc(1, sizeof(*stack));
-    assert(stack != NULL && "Ошибка выделения памяти :)");
-    return stack;
+    return calloc(1, sizeof(Stack));
 }
 
 void deleteStack(Stack* stack)
@@ -27,13 +25,18 @@ void deleteStack(Stack* stack)
     free(stack);
 }
 
-void push(Stack* stack, Node* node)
+bool push(Stack* stack, Node* node)
 {
     StackNode* newStackNode = malloc(sizeof(*newStackNode));
-    assert(newStackNode != NULL && "Ошибка выделения памяти... оу сэд...");
+    if (newStackNode == NULL) {
+        return false;
+    }
+
     newStackNode->node = node;
     newStackNode->next = stack->head;
     stack->head = newStackNode;
+
+    return true;
 }
 
 bool isEmpty(Stack* stack)
@@ -43,10 +46,14 @@ bool isEmpty(Stack* stack)
 
 Node* pop(Stack* stack)
 {
-    assert(!isEmpty(stack) && "Ошибка! Стек был пуст словно моя душа...");
+    if (isEmpty(stack)) {
+        return NULL;
+    }
+
     StackNode* popStackNode = stack->head;
-    stack->head = popStackNode->next;
     Node* popNode = popStackNode->node;
+    stack->head = popStackNode->next;
     free(popStackNode);
+
     return popNode;
 }
