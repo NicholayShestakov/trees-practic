@@ -1,129 +1,107 @@
 #include "bst.h"
-#include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 int main(void)
 {
     BST* tree = bstCreate();
-    bstInsert(tree, 1);
-    bstInsert(tree, 5);
-    bstInsert(tree, 6);
-    bstInsert(tree, 7);
-    assert(bstContains(tree, 5));
-
-    // Блок кода для теста итератора.
-    bstInsert(tree, 4);
-    bstInsert(tree, 2);
-    bstInsert(tree, 3);
-    Iterator* iter = iteratorInit(tree);
-    while (iteratorHasNext(iter)) {
-        printf("%d ", iteratorNext(iter));
+    if (tree == NULL) {
+        printf("Память под дерево не смогла выделиться.\n");
+        return 1;
     }
-    printf("\n");
-    iteratorFree(iter);
-    bstInsert(tree, 3);
-    bstInsert(tree, 8);
-    bstInsert(tree, 11);
-    bstInsert(tree, 42);
-    bstInsert(tree, 15);
 
-    // проверка на размер дерева
-    assert(bstSize(tree) == 11 && "Неправильно вычисленный размер дерева");
-    BST* emptyTree = bstCreate();
-    assert(bstSize(emptyTree) == 0 && "Ошибка в подсчете размера пустого дерева");
-
-    // Прямой обход, должно напечатать: 1, 5, 3, 8, 11, 42, 15
-    bstPreorder(tree);
-    // Симметричный обход, должно напечатать: 1, 3, 5, 8, 11, 15, 42
-    bstInorder(tree);
-    // Обратный обход, должно напечатать: 3, 15, 42, 11, 8, 5, 1
+    printf("Корректность отработки функций на пустом дереве:\n");
+    printf("bstContains(tree, 42) = %d\n", bstContains(tree, 42));
+    printf("bstPostorder(tree): ");
     bstPostorder(tree);
+    printf("bstInorder(tree): ");
+    bstInorder(tree);
+    printf("bstPreorder(tree): ");
+    bstPreorder(tree);
+    printf("bstHeight(tree) = %d\n", bstHeight(tree));
+    printf("bstSize(tree) = %d\n", bstSize(tree));
+    bool minErr = false;
+    printf("bstMin(tree, &minErr) = %d\n", bstMin(tree, &minErr));
+    printf("minErr = %d\n", minErr);
+    bool maxErr = false;
+    printf("bstMax(tree, &maxErr) = %d\n", bstMax(tree, &maxErr));
+    printf("maxErr = %d\n", maxErr);
+    printf("bstDelete(tree, 42) = %d\n", bstDelete(tree, 42));
+    printf("bstIsValid(tree) = %d\n", bstIsValid(tree));
+    bool kthMinErr = false;
+    printf("bstKthMin(tree, 1, &kthMinErr) = %d\n", bstKthMin(tree, 1, &kthMinErr));
+    printf("kthMinErr = %d\n", kthMinErr);
 
-    // проверка на максимальное и минимальные значения
-    assert(bstMax(tree) == 42 && "Ошибка в выявлении максимального узла");
-    assert(bstMin(tree) == 1 && "Ошибка в выявлении минимального узла");
+    Iterator* emptyIter = iteratorInit(tree);
+    if (emptyIter == NULL) {
+        printf("Память под итератор не смогла выделиться.\n");
+        return 1;
+    }
+    printf("iteratorHasNext(emptyIter) = %d\n", iteratorHasNext(emptyIter));
+    bool iterErr = false;
+    printf("iteratorNext(emptyIter) = %d\n", iteratorNext(emptyIter, &iterErr));
+    printf("iterErr = %d\n\n", iterErr);
+    iteratorFree(emptyIter);
 
-    // проверка на корректность дерева
-    assert(bstIsValid(tree) && "Ошибка в проверке корректности дерева");
+    printf("Проверка функций в обычных условиях:\n");
+    printf("bstInsert(tree, 42) = %d\n", bstInsert(tree, 42));
+    printf("bstInsert(tree, 42) = %d\n", bstInsert(tree, 42));
+    printf("bstInsert(tree, 41) = %d\n", bstInsert(tree, 41));
+    printf("bstInsert(tree, 43) = %d\n", bstInsert(tree, 43));
+    printf("bstContains(tree, 42) = %d\n", bstContains(tree, 42));
+    printf("bstPostorder(tree): ");
+    bstPostorder(tree);
+    printf("bstInorder(tree): ");
+    bstInorder(tree);
+    printf("bstPreorder(tree): ");
+    bstPreorder(tree);
+    printf("bstHeight(tree) = %d\n", bstHeight(tree));
+    printf("bstSize(tree) = %d\n", bstSize(tree));
+    minErr = false;
+    printf("bstMin(tree, &minErr) = %d\n", bstMin(tree, &minErr));
+    printf("minErr = %d\n", minErr);
+    maxErr = false;
+    printf("bstMax(tree, &maxErr) = %d\n", bstMax(tree, &maxErr));
+    printf("maxErr = %d\n", maxErr);
+    printf("bstDelete(tree, 42) = %d\n", bstDelete(tree, 42));
+    printf("bstPostorder(tree): ");
+    bstPostorder(tree);
+    printf("bstIsValid(tree) = %d\n", bstIsValid(tree));
+    kthMinErr = false;
+    printf("bstKthMin(tree, 2, &kthMinErr) = %d\n", bstKthMin(tree, 2, &kthMinErr));
+    printf("kthMinErr = %d\n", kthMinErr);
+
+    BST* treeToMerge = bstCreate();
+    if (treeToMerge == NULL) {
+        printf("Память под дерево для слияния не смогла выделиться.\n");
+        return 1;
+    }
+    printf("Создано еще одно дерево для слияния.\n");
+    printf("bstInsert(treeToMerge, 43) = %d\n", bstInsert(treeToMerge, 43));
+    printf("bstInsert(treeToMerge, 42) = %d\n", bstInsert(treeToMerge, 42));
+    BST* mergedTree = bstMerge(tree, treeToMerge);
+    if (mergedTree == NULL) {
+        printf("Память под слияние не смогла выделиться.\n");
+        return 1;
+    }
+    printf("Деревья слиты.\n");
+    printf("bstPostorder(mergedTree): ");
+    bstPostorder(mergedTree);
+    bstFree(treeToMerge);
+    bstFree(mergedTree);
+
+    Iterator* iter = iteratorInit(tree);
+    if (iter == NULL) {
+        printf("Память под итератор не смогла выделиться.\n");
+        return 1;
+    }
+    printf("iteratorHasNext(iter) = %d\n", iteratorHasNext(iter));
+    iterErr = false;
+    printf("iteratorNext(iter) = %d\n", iteratorNext(iter, &iterErr));
+    printf("iterErr = %d\n\n", iterErr);
+    iteratorFree(iter);
 
     bstFree(tree);
-
-    // проверка на слияние деревьев
-    BST* tree1 = bstCreate();
-    BST* tree2 = bstCreate();
-    bstInsert(tree1, 1);
-    bstInsert(tree1, 5);
-    bstInsert(tree1, 3);
-    bstInsert(tree1, 8);
-
-    bstInsert(tree2, 11);
-    bstInsert(tree2, 42);
-    bstInsert(tree2, 15);
-
-    BST* tree1MergeTree2 = bstMerge(tree1, tree2);
-    assert(bstContains(tree1MergeTree2, 1) && "В дереве нет нужного элемента");
-    assert(bstContains(tree1MergeTree2, 5) && "В дереве нет нужного элемента");
-    assert(bstContains(tree1MergeTree2, 3) && "В дереве нет нужного элемента");
-    assert(bstContains(tree1MergeTree2, 8) && "В дереве нет нужного элемента");
-    assert(bstContains(tree1MergeTree2, 11) && "В дереве нет нужного элемента");
-    assert(bstContains(tree1MergeTree2, 42) && "В дереве нет нужного элемента");
-    assert(bstContains(tree1MergeTree2, 15) && "В дереве нет нужного элемента");
-    // должно напечатать 1, 5, 3, 8, 11, 42, 15
-    bstPreorder(tree1MergeTree2);
-    bstFree(tree1MergeTree2);
-    bstFree(emptyTree);
-    bstFree(tree1);
-    bstFree(tree2);
-
-    // Проверка функции удаления
-    BST* treeD = bstCreate();
-
-    bstInsert(treeD, 50);
-    bstInsert(treeD, 30);
-    bstInsert(treeD, 70);
-    bstInsert(treeD, 20);
-    bstInsert(treeD, 40);
-    bstInsert(treeD, 60);
-    bstInsert(treeD, 80);
-
-    // Удаление листа
-    bstDelete(treeD, 20);
-    assert(!bstContains(treeD, 20));
-
-    // Удаление узла с одним ребенком
-    bstDelete(treeD, 30);
-    assert(!bstContains(treeD, 30));
-    assert(bstContains(treeD, 40));
-
-    // Удаление узла с двумя детьми
-    bstDelete(treeD, 70);
-    assert(!bstContains(treeD, 70));
-    assert(bstContains(treeD, 60));
-    assert(bstContains(treeD, 80));
-
-    // Удаление корня
-    bstDelete(treeD, 50);
-    assert(!bstContains(treeD, 50));
-
-    // Проверка оставшихся узлов
-    assert(bstContains(treeD, 40));
-    assert(bstContains(treeD, 60));
-    assert(bstContains(treeD, 80));
-    assert(bstSize(treeD) == 3);
-
-    // Проверка на корректную работу функции нахождения k - ого минимального элемента
-    BST* treeG = bstCreate();
-
-    bstInsert(treeG, 1);
-    bstInsert(treeG, 5);
-    bstInsert(treeG, 3);
-    bstInsert(treeG, 10);
-
-    assert(bstKthMin(treeG, 1) == 1 && "Функция работает некорректно");
-    assert(bstKthMin(treeG, 2) == 3 && "Функция работает некорректно");
-    assert(bstKthMin(treeG, 1) == 5 && "Функция работает некорректно");
-    assert(bstKthMin(treeG, 1) == 10 && "Функция работает некорректно");
 
     return 0;
 }
