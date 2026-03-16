@@ -1,7 +1,6 @@
 #include "bst.h"
 
 #include "stack.h"
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -20,27 +19,32 @@ typedef struct Iterator {
     Stack* nodeStack;
 } Iterator;
 
+/* Задача A — Структура и вставка */
+
 BST* bstCreate(void)
 {
-    BST* tree = calloc(1, sizeof(*tree));
-    return tree;
+    return calloc(1, sizeof(BST));
 }
 
-void bstInsert(BST* tree, int value)
+bool bstInsert(BST* tree, int value)
 {
     Node* newNode = calloc(1, sizeof(*newNode));
+    if (newNode == NULL) {
+        return false;
+    }
+
     newNode->value = value;
     Node* currentNode = tree->root;
     while (currentNode != NULL) {
         if (currentNode->value == value) {
             free(newNode);
-            return;
+            return false;
         }
         if (currentNode->value > value) {
             if (currentNode->leftChild == NULL) {
                 currentNode->leftChild = newNode;
                 tree->size++;
-                return;
+                return true;
             }
             currentNode = currentNode->leftChild;
         }
@@ -48,13 +52,15 @@ void bstInsert(BST* tree, int value)
             if (currentNode->rightChild == NULL) {
                 currentNode->rightChild = newNode;
                 tree->size++;
-                return;
+                return true;
             }
             currentNode = currentNode->rightChild;
         }
     }
     tree->root = newNode;
     tree->size++;
+
+    return true;
 }
 
 bool bstContains(BST* tree, int value)
@@ -92,12 +98,61 @@ void bstFreeRecursion(Node* node)
 
 void bstFree(BST* tree)
 {
-    if (tree->root == NULL) {
-        return;
-    }
     bstFreeRecursion(tree->root);
     free(tree);
 }
+
+/* Задача B — Обходы */
+
+void bstPreorderRecursion(Node* node)
+{
+    if (node == NULL) {
+        return;
+    }
+    printf("%d ", node->value);
+    bstPreorderRecursion(node->leftChild);
+    bstPreorderRecursion(node->rightChild);
+}
+
+void bstPreorder(BST* tree)
+{
+    bstPreorderRecursion(tree->root);
+    printf("\n");
+}
+
+void bstInorderRecursion(Node* node)
+{
+    if (node == NULL) {
+        return;
+    }
+    bstInorderRecursion(node->leftChild);
+    printf("%d ", node->value);
+    bstInorderRecursion(node->rightChild);
+}
+
+void bstInorder(BST* tree)
+{
+    bstInorderRecursion(tree->root);
+    printf("\n");
+}
+
+void bstPostorderRecursion(Node* node)
+{
+    if (node == NULL) {
+        return;
+    }
+    bstPostorderRecursion(node->leftChild);
+    bstPostorderRecursion(node->rightChild);
+    printf("%d ", node->value);
+}
+
+void bstPostorder(BST* tree)
+{
+    bstPostorderRecursion(tree->root);
+    printf("\n");
+}
+
+/* Задача C — Статистика дерева */
 
 int bstHeightRecursion(Node* node)
 {
@@ -118,9 +173,15 @@ int bstHeight(BST* tree)
     return height - 1;
 }
 
-int bstMin(BST* tree)
+int bstSize(BST* tree)
+{
+    return tree->size;
+}
+
+int bstMin(BST* tree, bool* err)
 {
     if (tree->root == NULL) {
+        *err = true;
         return -1;
     }
     Node* currentNode = tree->root;
@@ -130,9 +191,10 @@ int bstMin(BST* tree)
     return currentNode->value;
 }
 
-int bstMax(BST* tree)
+int bstMax(BST* tree, bool* err)
 {
     if (tree->root == NULL) {
+        *err = true;
         return -1;
     }
     Node* currentNode = tree->root;
@@ -141,222 +203,8 @@ int bstMax(BST* tree)
     }
     return currentNode->value;
 }
-// Добавляет всю левую палку данной ноды в стек, начиная от ближайшего.
-// Под палкой здесь подразумеваются элементы, по которым мы проходим, идя всё время именно влево, включая саму ноду.
-void addLeftStickInStack(Stack* stack, Node* node)
-{
-    Node* currentNode = node;
-    while (currentNode != NULL) {
-        push(stack, currentNode);
-        currentNode = currentNode->leftChild;
-    }
-}
 
-Iterator* iteratorInit(BST* tree)
-{
-    Iterator* iterator = malloc(sizeof(*iterator));
-    assert(iterator != NULL && "А вот на итератор-то памяти и не хватило. Ошибка.");
-
-    Stack* stack = createStack();
-    addLeftStickInStack(stack, tree->root);
-
-    iterator->nodeStack = stack;
-    return iterator;
-}
-
-bool iteratorHasNext(Iterator* iterator)
-{
-    return !isEmpty(iterator->nodeStack);
-}
-
-int iteratorNext(Iterator* iterator)
-{
-    assert(iteratorHasNext(iterator) && "Ошибка! Кончился у вас итератор! Нету его больше! Всё!");
-    Node* node = pop(iterator->nodeStack);
-    int value = node->value;
-
-    if (node->rightChild != NULL) {
-        addLeftStickInStack(iterator->nodeStack, node->rightChild);
-    }
-
-    return value;
-}
-
-void iteratorFree(Iterator* iterator)
-{
-    deleteStack(iterator->nodeStack);
-    free(iterator);
-}
-
-void bstPreorderRecursion(Node* node)
-{
-    if (node == NULL) {
-        return;
-    }
-    printf("%d ", node->value);
-    bstPreorderRecursion(node->leftChild);
-    bstPreorderRecursion(node->rightChild);
-}
-
-void bstPreorder(BST* tree)
-{
-    if (tree->root == NULL) {
-        return;
-    }
-    bstPreorderRecursion(tree->root);
-    printf("\n");
-}
-
-void bstInorderRecursion(Node* node)
-{
-    if (node == NULL) {
-        return;
-    }
-    bstInorderRecursion(node->leftChild);
-    printf("%d ", node->value);
-    bstInorderRecursion(node->rightChild);
-}
-
-void bstInorder(BST* tree)
-{
-    if (tree->root == NULL) {
-        return;
-    }
-    bstInorderRecursion(tree->root);
-    printf("\n");
-}
-
-void bstPostorderRecursion(Node* node)
-{
-    if (node == NULL) {
-        return;
-    }
-    bstPostorderRecursion(node->leftChild);
-    bstPostorderRecursion(node->rightChild);
-    printf("%d ", node->value);
-}
-
-void bstPostorder(BST* tree)
-{
-    if (tree->root == NULL) {
-        return;
-    }
-    bstPostorderRecursion(tree->root);
-    printf("\n");
-}
-
-int bstKthMinRecursion(Node* node, int* k)
-{
-    if (node == NULL) {
-        return -1;
-    }
-
-    int res = bstKthMinRecursion(node->leftChild, k);
-    if (res != -1) {
-        return res;
-    }
-
-    (*k)--;
-    if (*k == 0) {
-        return node->value;
-    }
-
-    return bstKthMinRecursion(node->rightChild, k);
-}
-
-int bstKthMin(BST* tree, int k)
-{
-    if (tree == NULL) {
-        printf("Ошибка! Дерево не существует");
-        return -1;
-    }
-
-    if (k <= 0) {
-        printf("Ошибка! Некорретное значение k");
-        return -1;
-    }
-
-    if (k > bstSize(tree)) {
-        printf("Ошибка! Некорретное значение k");
-        return -1;
-    }
-
-    return bstKthMinRecursion(tree->root, &k);
-}
-
-bool bstIsValidRecursion(Node* node, int* min, int* max)
-{
-    if (node == NULL) {
-        return true;
-    }
-    if (min != NULL && node->value <= *min) {
-        return false;
-    }
-
-    if (max != NULL && node->value >= *max) {
-        return false;
-    }
-    return bstIsValidRecursion(node->leftChild, min, &node->value) && bstIsValidRecursion(node->rightChild, &node->value, max);
-}
-
-bool bstIsValid(BST* tree)
-{
-    if (tree == NULL) {
-        return false;
-    }
-    return bstIsValidRecursion(tree->root, NULL, NULL);
-}
-// ----------------------------------------------
-
-int bstSize(BST* tree)
-{
-    return tree->size;
-}
-
-// Внутренняя функция, не доступная пользователю.
-// Рекурсивно добавляет элементы в переданный массив
-void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int* index)
-{
-    if (node == NULL || arr == NULL) {
-        return;
-    }
-    arr[(*index)++] = node->value;
-    bstPreorderRecursionAddingNodesInArr(node->leftChild, arr, index);
-    bstPreorderRecursionAddingNodesInArr(node->rightChild, arr, index);
-}
-
-int* getAllNodesFromTree(BST* tree)
-{
-    int size = bstSize(tree);
-    if (size == 0) {
-        return NULL;
-    }
-    int* arrWithNodes = calloc(size, sizeof(int));
-    if (arrWithNodes == NULL) {
-        return NULL;
-    }
-    int index = 0;
-    bstPreorderRecursionAddingNodesInArr(tree->root, arrWithNodes, &index);
-    return arrWithNodes;
-}
-
-BST* bstMerge(BST* tree1, BST* tree2)
-{
-    int size1 = bstSize(tree1);
-    int size2 = bstSize(tree2);
-    int* nodes1 = getAllNodesFromTree(tree1);
-    int* nodes2 = getAllNodesFromTree(tree2);
-    BST* newTree = bstCreate();
-    for (int i = 0; i < size1; i++) {
-        bstInsert(newTree, nodes1[i]);
-    }
-    for (int j = 0; j < size2; j++) {
-        bstInsert(newTree, nodes2[j]);
-    }
-    free(nodes1);
-    free(nodes2);
-    return newTree;
-}
+/* Задача D — Удаление */
 
 Node* parentRecursive(Node* parent, Node* node)
 {
@@ -367,13 +215,9 @@ Node* parentRecursive(Node* parent, Node* node)
          * так и "узел не существует в этом поддереве".
          */
         return NULL;
-    }
-
-    else if (parent->leftChild == node || parent->rightChild == node) {
+    } else if (parent->leftChild == node || parent->rightChild == node) {
         return parent;
-    }
-
-    else {
+    } else {
         Node* leftParent = parentRecursive(parent->leftChild, node);
         if (leftParent != NULL) {
             return leftParent;
@@ -415,16 +259,15 @@ Node* minRightTree(Node* node) // Функция, находящая миним�
     return current;
 }
 
-void bstDelete(BST* tree, int value)
+bool bstDelete(BST* tree, int value)
 {
     if (tree == NULL || tree->root == NULL) {
-        return;
+        return false;
     }
 
     Node* current = tree->root;
 
     while (current != NULL && current->value != value) {
-
         if (value < current->value) {
             current = current->leftChild;
         } else {
@@ -433,7 +276,7 @@ void bstDelete(BST* tree, int value)
     }
 
     if (current == NULL) {
-        return;
+        return false;
     }
 
     if (current->leftChild == NULL && current->rightChild == NULL) {
@@ -444,20 +287,16 @@ void bstDelete(BST* tree, int value)
             if (tree->root == current) {
                 tree->root = NULL;
             } else {
-                return;
+                return false;
             }
-
         } else if (parent->leftChild == current) {
             parent->leftChild = NULL;
-
         } else {
             parent->rightChild = NULL;
         }
         free(current);
         tree->size--;
-    }
-
-    else if (current->leftChild == NULL || current->rightChild == NULL) {
+    } else if (current->leftChild == NULL || current->rightChild == NULL) {
 
         Node* temp = NULL;
 
@@ -478,9 +317,7 @@ void bstDelete(BST* tree, int value)
         }
         free(current);
         tree->size--;
-    }
-
-    else {
+    } else {
         Node* minRight = minRightTree(current);
 
         int minRightValue = minRight->value;
@@ -496,4 +333,183 @@ void bstDelete(BST* tree, int value)
         free(minRight);
         tree->size--;
     }
+
+    return true;
+}
+
+/* Задача E — Слияние двух деревьев */
+
+/*
+ * Рекурсивно добавляет элементы в переданный массив.
+ */
+void bstPreorderRecursionAddingNodesInArr(Node* node, int* arr, int* index)
+{
+    if (node == NULL || arr == NULL) {
+        return;
+    }
+    arr[(*index)++] = node->value;
+    bstPreorderRecursionAddingNodesInArr(node->leftChild, arr, index);
+    bstPreorderRecursionAddingNodesInArr(node->rightChild, arr, index);
+}
+
+/*
+ * Функция, которая создает массив из всех значений узлов дерева в порядке прямого обхода.
+ * На вход принимает само дерево, а возвращает указатель на массив с значениями всех узлов дерева.
+ * Если дерево пустое, возвращает NULL.
+ * Если не выделилась память внутри функции тоже возвращается NULL.
+ */
+int* getAllNodesFromTree(BST* tree)
+{
+    int size = bstSize(tree);
+    if (size == 0) {
+        return NULL;
+    }
+    int* arrWithNodes = calloc(size, sizeof(int));
+    if (arrWithNodes == NULL) {
+        return NULL;
+    }
+    int index = 0;
+    bstPreorderRecursionAddingNodesInArr(tree->root, arrWithNodes, &index);
+    return arrWithNodes;
+}
+
+BST* bstMerge(BST* tree1, BST* tree2)
+{
+    int size1 = bstSize(tree1);
+    int size2 = bstSize(tree2);
+    int* nodes1 = getAllNodesFromTree(tree1);
+    int* nodes2 = getAllNodesFromTree(tree2);
+
+    BST* newTree = bstCreate();
+    if (newTree == NULL) {
+        return NULL;
+    }
+
+    for (int i = 0; i < size1; i++) {
+        bstInsert(newTree, nodes1[i]);
+    }
+    for (int j = 0; j < size2; j++) {
+        bstInsert(newTree, nodes2[j]);
+    }
+    free(nodes1);
+    free(nodes2);
+    return newTree;
+}
+
+/* Задача F — Проверка корректности */
+
+bool bstIsValidRecursion(Node* node, int* min, int* max)
+{
+    if (node == NULL) {
+        return true;
+    }
+    if (min != NULL && node->value <= *min) {
+        return false;
+    }
+    if (max != NULL && node->value >= *max) {
+        return false;
+    }
+    return bstIsValidRecursion(node->leftChild, min, &node->value) && bstIsValidRecursion(node->rightChild, &node->value, max);
+}
+
+bool bstIsValid(BST* tree)
+{
+    if (tree == NULL) {
+        return false;
+    }
+    return bstIsValidRecursion(tree->root, NULL, NULL);
+}
+
+/* Задача G — k-й минимальный элемент */
+
+int bstKthMinRecursion(Node* node, int* k, bool* err)
+{
+    if (node == NULL) {
+        *err = true;
+        return -1;
+    }
+
+    int res = bstKthMinRecursion(node->leftChild, k, err);
+    if (res != -1) {
+        return res;
+    }
+
+    (*k)--;
+    if (*k == 0) {
+        return node->value;
+    }
+
+    return bstKthMinRecursion(node->rightChild, k, err);
+}
+
+int bstKthMin(BST* tree, int k, bool* err)
+{
+    if (tree == NULL) {
+        *err = true;
+        return -1;
+    }
+
+    if (k > bstSize(tree) || k < 1) {
+        *err = true;
+        return -1;
+    }
+
+    return bstKthMinRecursion(tree->root, &k, err);
+}
+
+/* Задача H — Итератор */
+
+/*
+ * Добавляет всю левую палку данной ноды в стек, начиная от ближайшего.
+ * Под палкой здесь подразумеваются элементы, по которым мы проходим, идя всё время именно влево, включая саму ноду.
+ */
+void addLeftStickInStack(Stack* stack, Node* node)
+{
+    Node* currentNode = node;
+    while (currentNode != NULL) {
+        push(stack, currentNode);
+        currentNode = currentNode->leftChild;
+    }
+}
+
+Iterator* iteratorInit(BST* tree)
+{
+    Iterator* iterator = malloc(sizeof(*iterator));
+    if (iterator == NULL) {
+        return NULL;
+    }
+
+    Stack* stack = createStack();
+    addLeftStickInStack(stack, tree->root);
+
+    iterator->nodeStack = stack;
+    return iterator;
+}
+
+bool iteratorHasNext(Iterator* iterator)
+{
+    return !isEmpty(iterator->nodeStack);
+}
+
+int iteratorNext(Iterator* iterator, bool* err)
+{
+    if (!iteratorHasNext(iterator)) {
+        *err = true;
+        return -1;
+    }
+
+    Node* node = pop(iterator->nodeStack);
+    int value = node->value;
+
+    if (node->rightChild != NULL) {
+        addLeftStickInStack(iterator->nodeStack, node->rightChild);
+    }
+
+    return value;
+}
+
+void iteratorFree(Iterator* iterator)
+{
+    deleteStack(iterator->nodeStack);
+    free(iterator);
 }
