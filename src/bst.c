@@ -382,6 +382,8 @@ BST* bstMerge(BST* tree1, BST* tree2)
 
     BST* newTree = bstCreate();
     if (newTree == NULL) {
+        free(nodes1);
+        free(nodes2);
         return NULL;
     }
 
