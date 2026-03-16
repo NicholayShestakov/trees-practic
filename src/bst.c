@@ -245,6 +245,67 @@ void bstPostorder(BST* tree)
     printf("\n");
 }
 
+int bstKthMinRecursion(Node* node, int* k)
+{
+    if (node == NULL) {
+        return -1;
+    }
+
+    int res = bstKthMinRecursion(node->leftChild, k);
+    if (res != -1) {
+        return res;
+    }
+
+    (*k)--;
+    if (*k == 0) {
+        return node->value;
+    }
+
+    return bstKthMinRecursion(node->rightChild, k);
+}
+
+int bstKthMin(BST* tree, int k)
+{
+    if (tree == NULL) {
+        printf("Ошибка! Дерево не существует");
+        return -1;
+    }
+
+    if (k <= 0) {
+        printf("Ошибка! Некорретное значение k");
+        return -1;
+    }
+
+    if (k > bstSize(tree)) {
+        printf("Ошибка! Некорретное значение k");
+        return -1;
+    }
+
+    return bstKthMinRecursion(tree->root, &k);
+}
+
+bool bstIsValidRecursion(Node* node, int* min, int* max)
+{
+    if (node == NULL) {
+        return true;
+    }
+    if (min != NULL && node->value <= *min) {
+        return false;
+    }
+
+    if (max != NULL && node->value >= *max) {
+        return false;
+    }
+    return bstIsValidRecursion(node->leftChild, min, &node->value) && bstIsValidRecursion(node->rightChild, &node->value, max);
+}
+
+bool bstIsValid(BST* tree)
+{
+    if (tree == NULL) {
+        return false;
+    }
+    return bstIsValidRecursion(tree->root, NULL, NULL);
+}
 // ----------------------------------------------
 
 int bstSize(BST* tree)
